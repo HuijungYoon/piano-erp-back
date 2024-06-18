@@ -20,6 +20,7 @@ import { Lessons } from './entities/Lessons';
 import { Students } from './entities/Students';
 import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { TeachersModule } from './teachers/teachers.module';
     StudentsModule,
     TeachersModule,
     SmssModule,
+    AuthModule,
   ],
   controllers: [
     AppController,

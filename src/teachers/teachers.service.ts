@@ -22,10 +22,6 @@ export class TeachersService {
     tel: string,
     level: 'admin' | 'teacher' | 'assistant',
   ) {
-    if (!teacherId || !password || !name || !tel || !level) {
-      throw new BadRequestException('모든 항목을 입력해주세요.');
-    }
-
     const teacher = await this.teachersRepository.findOne({
       where: { teacherId },
     });

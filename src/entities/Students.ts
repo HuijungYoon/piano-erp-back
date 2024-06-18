@@ -17,7 +17,7 @@ import { Lessons } from './Lessons';
 @Entity({ schema: 'pianoerp', name: 'students' })
 export class Students {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
-  id: string;
+  id: number;
 
   @Column('varchar', { name: 'name', length: 30 })
   name: string;

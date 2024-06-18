@@ -10,7 +10,7 @@ import {
 @Entity({ schema: 'pianoerp', name: 'smss' })
 export class SMSs {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
-  id: string;
+  id: number;
 
   @Column('varchar', { name: 'name', length: 30 })
   name: string;

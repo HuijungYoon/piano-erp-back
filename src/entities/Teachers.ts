@@ -10,6 +10,7 @@ import {
   Index,
 } from 'typeorm';
 import { Students } from './Students';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Index('tel', ['tel'], { unique: true })
 @Index('teacherId', ['teacherId'], { unique: true })
@@ -17,17 +18,25 @@ import { Students } from './Students';
 @Entity({ schema: 'pianoerp', name: 'teachers' })
 export class Teachers {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
-  id: string;
+  id: number;
 
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'teacherId', unique: true, length: 100 })
   teacherId: string;
 
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'password', length: 100, select: false })
   password: string;
 
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'name', length: 30, unique: true })
   name: string;
 
+  @IsString()
+  @IsNotEmpty()
   @Column('varchar', { name: 'tel', length: 30, unique: true })
   tel: string;
 

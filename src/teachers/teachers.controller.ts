@@ -6,10 +6,16 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { Teacher } from 'src/common/decorators/teacher.decorator';
+import { Teachers } from 'src/entities/Teachers';
 
 @Controller('api/teachers')
 export class TeachersController {
@@ -24,6 +30,18 @@ export class TeachersController {
       createTeacherDto.tel,
       createTeacherDto.level,
     );
+  }
+  @UseGuards(LocalAuthGuard) //권한목적
+  @Post('login')
+  async login(@Teacher() teacher: Teachers) {
+    return teacher;
+  }
+
+  @Post('logout')
+  async logout(@Req() req, @Res() res) {
+    req.logout();
+    res.clearCookie('connect.sid', { httpOnly: true });
+    res.send('ok');
   }
 
   @Get()
