@@ -25,9 +25,18 @@ export class TeachersService {
     const teacher = await this.teachersRepository.findOne({
       where: { teacherId },
     });
+
+    const teacherName = await this.teachersRepository.findOne({
+      where: { name },
+    });
+
     if (teacher) {
       throw new UnauthorizedException('이미 존재하는 아이디입니다.');
     }
+    if (teacherName) {
+      throw new UnauthorizedException('이미 존재하는 이름입니다.');
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     await this.teachersRepository.save({
@@ -39,19 +48,48 @@ export class TeachersService {
     });
   }
 
-  findAll() {
-    return `This action returns all teachers`;
+  async findAll() {
+    const teachers = await this.teachersRepository.find();
+    return teachers;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} teacher`;
+  async findOne(id: number) {
+    const teacher = await this.teachersRepository.findOne({
+      where: { id },
+      select: ['id', 'teacherId', 'name', 'tel', 'level'],
+    });
+
+    if (!teacher) {
+      throw new BadRequestException('존재하지 않는 아이디입니다.');
+    }
+    return teacher;
   }
 
-  update(id: number, updateTeacherDto: UpdateTeacherDto) {
-    return `This action updates a #${id} teacher`;
+  async update(id: number, updateTeacherDto: UpdateTeacherDto) {
+    const teacher = await this.teachersRepository.findOne({
+      where: { id },
+    });
+    const name = await this.teachersRepository.findOne({
+      where: { name: updateTeacherDto.name },
+    });
+    console.log(name);
+    if (!teacher) {
+      throw new BadRequestException('존재하지 않는 아이디입니다.');
+    }
+    if (name) {
+      throw new BadRequestException('이미 존재하는 이름입니다.');
+    }
+
+    await this.teachersRepository.update(id, updateTeacherDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} teacher`;
+  async remove(id: number) {
+    const teacher = this.teachersRepository.findOne({
+      where: { id },
+    });
+    if (!teacher) {
+      throw new BadRequestException('존재하지 않는 아이디입니다.');
+    }
+    await this.teachersRepository.delete(id);
   }
 }

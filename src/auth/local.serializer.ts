@@ -16,7 +16,6 @@ export class LocalSerializer extends PassportSerializer {
   }
 
   serializeUser(teacher: Teachers, done: CallableFunction) {
-    console.log(teacher);
     done(null, teacher.id);
   }
 
@@ -25,10 +24,10 @@ export class LocalSerializer extends PassportSerializer {
       .findOneOrFail({
         where: { id: +teacherId },
         select: ['id', 'teacherId', 'name', 'level'],
-        relations: ['Students'],
+        relations: ['students'],
       })
       .then((teacher) => {
-        console.log('teacher', teacher);
+        //   console.log('teacher', teacher);
         done(null, teacher);
       })
       .catch((error) => done(error));

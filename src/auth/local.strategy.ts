@@ -10,14 +10,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(teacherId: string, password: string): Promise<any> {
-    console.log('LocalStrategy validate - teacherId:', teacherId); // 로그 추가
-    console.log('LocalStrategy validate - password:', password); // 로그 추가
     const teacher = await this.authService.validateTeacher(teacherId, password);
-    console.log('LocalStrategy validate - result:', teacher); // 로그 추가
     if (!teacher) {
-      console.log('LocalStrategy validate - UnauthorizedException'); // 로그 추가
       throw new UnauthorizedException();
     }
+
     return teacher;
   }
 }

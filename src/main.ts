@@ -27,9 +27,18 @@ async function bootstrap() {
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
+        // maxAge : 6000 //
       },
     }),
   );
+
+  // Enable CORS
+  app.enableCors({
+    origin: ['http://localhost:3002', 'http://another-domain.com'], // 허용할 도메인 배열
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
+
   app.use(passport.initialize());
   app.use(passport.session());
   const document = SwaggerModule.createDocument(app, config);

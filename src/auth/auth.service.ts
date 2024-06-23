@@ -17,14 +17,12 @@ export class AuthService {
       where: { teacherId },
       select: ['id', 'teacherId', 'password', 'name', 'level'],
     });
-    console.log(teacherId, password, teacher);
     if (!teacher) {
       return null;
     }
     const result = await bcrypt.compare(password, teacher.password);
     if (result) {
       const { password, ...teacherWithoutPassword } = teacher;
-      console.log(teacherWithoutPassword);
       return teacherWithoutPassword;
     }
     return null;
