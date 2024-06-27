@@ -46,20 +46,8 @@ import { AuthModule } from './auth/auth.module';
     SmssModule,
     AuthModule,
   ],
-  controllers: [
-    AppController,
-    StudentsController,
-    TeachersController,
-    MacrosController,
-  ],
-  providers: [
-    AppService,
-    StudentsService,
-    StudentsService,
-    TeachersService,
-    MacrosService,
-    StudentsService,
-  ],
+  controllers: [AppController, MacrosController],
+  providers: [AppService, MacrosService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {

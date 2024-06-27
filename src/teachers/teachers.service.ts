@@ -49,7 +49,9 @@ export class TeachersService {
   }
 
   async findAll() {
-    const teachers = await this.teachersRepository.find();
+    const teachers = await this.teachersRepository.find({
+      relations: ['students'],
+    });
     return teachers;
   }
 
@@ -90,6 +92,13 @@ export class TeachersService {
     if (!teacher) {
       throw new BadRequestException('존재하지 않는 아이디입니다.');
     }
-    await this.teachersRepository.delete(id);
+    try {
+      await this.teachersRepository.delete(id);
+    } catch (error) {
+      throw new HttpException(
+        '수강생리스트 중에 해당 선생님이 있어 삭제할 수 없습니다.',
+        500,
+      );
+    }
   }
 }

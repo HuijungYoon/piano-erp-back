@@ -1,4 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Students } from 'src/entities/Students';
 
 export class CreateStudentDto extends PickType(Students, [
@@ -8,10 +9,13 @@ export class CreateStudentDto extends PickType(Students, [
   'age',
   'tutionfee',
   'tel',
-  'teacher',
   'address',
   'memo',
   'register',
   'closeday',
   'paymentdue',
-] as const) {}
+] as const) {
+  @IsString()
+  @IsNotEmpty()
+  teacher: string;
+}
