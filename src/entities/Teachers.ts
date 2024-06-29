@@ -7,9 +7,11 @@ import {
   DeleteDateColumn,
   PrimaryGeneratedColumn,
   Index,
+  JoinTable,
 } from 'typeorm';
 import { Students } from './Students';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Lessons } from './Lessons';
 
 @Index('tel', ['tel'], { unique: true })
 @Index('teacherId', ['teacherId'], { unique: true })
@@ -57,4 +59,8 @@ export class Teachers {
 
   @OneToMany(() => Students, (student) => student.teacher)
   students: Students[];
+
+  @OneToMany(() => Lessons, (lesson) => lesson.teachers)
+  @JoinTable()
+  lessons: Lessons[];
 }

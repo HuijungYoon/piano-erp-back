@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Index,
+  OneToMany,
 } from 'typeorm';
 import { Teachers } from './Teachers';
 import { Lessons } from './Lessons';
@@ -92,7 +93,7 @@ export class Students {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToMany(() => Lessons, (lesson) => lesson.students)
+  @OneToMany(() => Lessons, (lesson) => lesson.students)
   @JoinTable()
   lessons: Lessons[];
 }

@@ -7,8 +7,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Index,
+  ManyToOne,
 } from 'typeorm';
 import { Students } from './Students';
+import { Teachers } from './Teachers';
 
 @Entity({ schema: 'pianoerp', name: 'lessons' })
 export class Lessons {
@@ -39,6 +41,9 @@ export class Lessons {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToMany(() => Students, (student) => student.lessons)
+  @ManyToOne(() => Students, (student) => student.lessons)
   students: Students[];
+
+  @ManyToOne(() => Teachers, (teacher) => teacher.lessons)
+  teachers: Teachers[];
 }
