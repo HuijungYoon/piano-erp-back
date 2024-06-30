@@ -9,6 +9,7 @@ import { Students } from 'src/entities/Students';
 import { Teachers } from 'src/entities/Teachers';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Lessons } from 'src/entities/Lessons';
 
 @Injectable()
 export class StudentsService {
@@ -16,6 +17,8 @@ export class StudentsService {
     @InjectRepository(Students) private studentRepository: Repository<Students>,
     @InjectRepository(Teachers)
     private teachersRepository: Repository<Teachers>,
+    @InjectRepository(Lessons)
+    private lessonsRepository: Repository<Lessons>,
   ) {}
 
   async create(
@@ -142,9 +145,13 @@ export class StudentsService {
       }
     }
 
+    const oldName = (await student).name;
+    const newName = updateStudentDto.name;
+
     const newUpdateStudentDto = { ...updateStudentDto, teacher };
 
     await this.studentRepository.update(id, newUpdateStudentDto);
+    await this.lessonsRepository.update({ name: oldName }, { name: newName });
   }
 
   async remove(id: number) {

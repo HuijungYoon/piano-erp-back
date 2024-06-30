@@ -43,7 +43,6 @@ import { AuthModule } from './auth/auth.module';
     SmssModule,
     StudentsModule,
     TeachersModule,
-    SmssModule,
     AuthModule,
   ],
   controllers: [AppController, MacrosController],

@@ -23,11 +23,11 @@ export class Lessons {
   @Column('varchar', { name: 'teacher', length: 30 })
   teacher: string;
 
-  @Column('text', { name: 'memo' })
+  @Column('text', { name: 'memo', nullable: true })
   memo: string;
 
-  @Column('timestamp', { name: 'lessontime' })
-  lessontime: Date;
+  @Column('varchar', { name: 'lessontime', length: 30 })
+  lessontime: string;
 
   @Column('date', { name: 'lessondate' })
   lessondate: Date;
