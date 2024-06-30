@@ -157,7 +157,6 @@ export class StudentsService {
 
   async remove(id: number) {
     const student = await this.studentRepository.findOne({ where: { id } });
-    console.log(student);
     if (!student) {
       throw new BadRequestException(`존재하지 않는 학생입니다.`);
     }

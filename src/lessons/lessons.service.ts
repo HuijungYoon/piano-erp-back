@@ -72,7 +72,14 @@ export class LessonsService {
     await this.lessonsRepository.update(id, updateLessonDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lesson`;
+  async remove(id: number) {
+    const lesson = await this.lessonsRepository.findOne({
+      where: { id },
+    });
+
+    if (!lesson) {
+      throw new BadRequestException(`존재하지 않는 수업입니다.`);
+    }
+    await this.lessonsRepository.delete(id);
   }
 }
