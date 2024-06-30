@@ -42,8 +42,8 @@ export class Lessons {
   deletedAt: Date | null;
 
   @ManyToOne(() => Students, (student) => student.lessons)
-  students: Students[];
+  students: Students;
 
   @ManyToOne(() => Teachers, (teacher) => teacher.lessons)
-  teachers: Teachers[];
+  teachers: Teachers;
 }

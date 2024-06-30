@@ -9,11 +9,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Teachers } from 'src/entities/Teachers';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Lessons } from 'src/entities/Lessons';
 @Injectable()
 export class TeachersService {
   constructor(
     @InjectRepository(Teachers)
     private teachersRepository: Repository<Teachers>,
+    @InjectRepository(Lessons)
+    private lessonsRepository: Repository<Lessons>,
   ) {}
   async create(
     teacherId: string,
@@ -71,10 +74,15 @@ export class TeachersService {
     const teacher = await this.teachersRepository.findOne({
       where: { id },
     });
+    const lessons = await this.lessonsRepository.findOne({
+      where: { teacher: teacher.name },
+    });
+    console.log(lessons);
+
     const name = await this.teachersRepository.findOne({
       where: { name: updateTeacherDto.name },
     });
-    console.log(name);
+
     if (!teacher) {
       throw new BadRequestException('존재하지 않는 아이디입니다.');
     }
@@ -82,7 +90,14 @@ export class TeachersService {
       throw new BadRequestException('이미 존재하는 이름입니다.');
     }
 
+    const oldName = (await lessons).teacher;
+    const newName = updateTeacherDto.name;
+
     await this.teachersRepository.update(id, updateTeacherDto);
+    await this.lessonsRepository.update(
+      { teacher: oldName },
+      { teacher: newName },
+    );
   }
 
   async remove(id: number) {

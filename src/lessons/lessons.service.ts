@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
@@ -28,13 +32,13 @@ export class LessonsService {
     if (!student) {
       throw new UnauthorizedException(`존재하지 않는 학생입니다.`);
     }
-
     await this.lessonsRepository.save({
-      name,
+      name: `${name}(${student.tel})`,
       teacher,
       lessontime,
       lessondate,
       memo,
+      students: student,
     });
   }
 
@@ -46,12 +50,26 @@ export class LessonsService {
     return lessons;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lesson`;
+  async findOne(id: number) {
+    const lesson = await this.lessonsRepository.findOne({
+      where: { id },
+    });
+    if (!lesson) {
+      throw new BadRequestException(`존재하지 않는 수업입니다.`);
+    }
+    return lesson;
   }
 
-  update(id: number, updateLessonDto: UpdateLessonDto) {
-    return `This action updates a #${id} lesson`;
+  async update(id: number, updateLessonDto: UpdateLessonDto) {
+    const lesson = await this.lessonsRepository.findOne({
+      where: { id },
+    });
+
+    if (!lesson) {
+      throw new BadRequestException(`존재하지 않는 수업입니다.`);
+    }
+
+    await this.lessonsRepository.update(id, updateLessonDto);
   }
 
   remove(id: number) {

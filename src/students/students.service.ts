@@ -70,6 +70,7 @@ export class StudentsService {
     const students = await this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
+      .leftJoinAndSelect('student.lessons', 'lessons')
       .where('student.closeday IS NULL')
       .getMany();
 
