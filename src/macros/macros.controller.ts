@@ -1,20 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { MacrosService } from './macros.service';
 import { CreateMacroDto } from './dto/create-macro.dto';
 import { UpdateMacroDto } from './dto/update-macro.dto';
 
-@Controller('macros')
+@Controller('api/macros')
 export class MacrosController {
   constructor(private readonly macrosService: MacrosService) {}
 
   @Post()
-  create(@Body() createMacroDto: CreateMacroDto) {
-    return this.macrosService.create(createMacroDto);
+  async create(@Body() createMacroDto: CreateMacroDto) {
+    return await this.macrosService.create(
+      createMacroDto.name,
+      createMacroDto.format,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.macrosService.findAll();
+  async findAll() {
+    return await this.macrosService.findAll();
   }
 
   @Get(':id')

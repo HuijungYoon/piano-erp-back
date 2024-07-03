@@ -71,6 +71,7 @@ export class StudentsService {
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
       .leftJoinAndSelect('student.lessons', 'lessons')
+      .orderBy('student.id', 'DESC')
       .where('student.closeday IS NULL')
       .getMany();
 
@@ -81,7 +82,7 @@ export class StudentsService {
   findOne(id: number) {
     const student = this.studentRepository.findOne({
       where: { id },
-      relations: ['teacher'],
+      relations: ['teacher', 'lessons'],
     });
     if (!student) {
       throw new BadRequestException(`존재하지 않는 학생입니다.`);

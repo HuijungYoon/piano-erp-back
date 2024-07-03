@@ -45,6 +45,7 @@ export class LessonsService {
   findAll() {
     const lessons = this.lessonsRepository.find({
       relations: ['students'],
+      order: { lessondate: 'DESC' },
     });
 
     return lessons;

@@ -12,11 +12,11 @@ export class Macros {
   @PrimaryGeneratedColumn({ name: 'id', type: 'int' })
   id: number;
 
-  @Column('varchar', { name: 'name', length: 30 })
+  @Column('varchar', { name: 'name', length: 30, unique: true })
   name: string;
 
   @Column('text', { name: 'content' })
-  formate: string;
+  format: string;
 
   @CreateDateColumn()
   createdAt: Date;

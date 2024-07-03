@@ -21,6 +21,7 @@ import { Students } from './entities/Students';
 import { StudentsModule } from './students/students.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { AuthModule } from './auth/auth.module';
+import { MacrosModule } from './macros/macros.module';
 
 @Module({
   imports: [
@@ -44,9 +45,10 @@ import { AuthModule } from './auth/auth.module';
     StudentsModule,
     TeachersModule,
     AuthModule,
+    MacrosModule,
   ],
-  controllers: [AppController, MacrosController],
-  providers: [AppService, MacrosService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
