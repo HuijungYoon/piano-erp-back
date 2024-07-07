@@ -17,7 +17,7 @@ const dataSource = new DataSource({
   database: process.env.DB_DATABASE,
   entities: [Students, Teachers, SMSs, Lessons, Macros],
   migrations: [__dirname + '/src/migrations/*.ts'],
-  synchronize: false,
+  synchronize: true,
   charset: 'utf8mb4_general_ci',
   logging: true,
 });

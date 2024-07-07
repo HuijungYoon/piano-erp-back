@@ -20,7 +20,7 @@ const dataSource = new typeorm_1.DataSource({
     database: process.env.DB_DATABASE,
     entities: [Students_1.Students, Teachers_1.Teachers, SMSs_1.SMSs, Lessons_1.Lessons, Macros_1.Macros],
     migrations: [__dirname + '/src/migrations/*.ts'],
-    synchronize: false,
+    synchronize: true,
     charset: 'utf8mb4_general_ci',
     logging: true,
 });
