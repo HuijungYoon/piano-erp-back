@@ -31,15 +31,36 @@ export class MacrosService {
     return macros;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} macro`;
+  async findOne(id: number) {
+    const macro = this.macroRepository.findOne({
+      where: { id },
+    });
+
+    if (!macro) {
+      throw new UnauthorizedException(`존재하지 않는 매크로입니다.`);
+    }
+    return await macro;
   }
 
-  update(id: number, updateMacroDto: UpdateMacroDto) {
-    return `This action updates a #${id} macro`;
+  async update(id: number, updateMacroDto: UpdateMacroDto) {
+    const macro = this.macroRepository.findOne({
+      where: { id },
+    });
+    if (!macro) {
+      throw new UnauthorizedException(`존재하지 않는 매크로입니다.`);
+    }
+    return await this.macroRepository.update(id, updateMacroDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} macro`;
+  async remove(id: number) {
+    const macro = this.macroRepository.findOne({
+      where: { id },
+    });
+
+    if (!macro) {
+      throw new UnauthorizedException(`존재하지 않는 매크로입니다.`);
+    }
+
+    await this.macroRepository.delete(id);
   }
 }

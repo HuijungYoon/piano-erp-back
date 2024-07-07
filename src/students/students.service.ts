@@ -74,8 +74,6 @@ export class StudentsService {
       .orderBy('student.id', 'DESC')
       .where('student.closeday IS NULL')
       .getMany();
-
-    console.log(students);
     return students;
   }
 
@@ -91,7 +89,6 @@ export class StudentsService {
   }
 
   async search(teacherId?: string, studentName?: string, status?: string) {
-    console.log('Search Params:', { teacherId, studentName, status });
     const query = this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
@@ -114,23 +111,23 @@ export class StudentsService {
     }
 
     const sql = query.getSql();
-    console.log('Generated SQL:', sql);
-
     const parameters = query.getParameters();
-    console.log('Query Parameters:', parameters);
-
     const result = await query.getMany();
-    console.log('Query Result:', result);
+
     return result;
   }
 
   async update(id: number, updateStudentDto: UpdateStudentDto) {
-    const student = this.studentRepository.findOne({ where: { id } });
+    const student = await this.studentRepository.findOne({ where: { id } });
 
     const teacher = await this.teachersRepository.findOne({
       where: { name: updateStudentDto.teacher },
     });
 
+    const studentIncludeTel = `${student.name}(${student.tel})`;
+    const lessons = await this.lessonsRepository.findOne({
+      where: { name: studentIncludeTel },
+    });
     if (!teacher) {
       throw new NotFoundException(`선생님이 존재하지 않습니다.`);
     }
@@ -147,13 +144,15 @@ export class StudentsService {
       }
     }
 
-    const oldName = (await student).name;
-    const newName = updateStudentDto.name;
+    if (lessons) {
+      const oldName = studentIncludeTel;
+      const newName = `${updateStudentDto.name}(${updateStudentDto.tel})`;
+      await this.lessonsRepository.update({ name: oldName }, { name: newName });
+    }
 
     const newUpdateStudentDto = { ...updateStudentDto, teacher };
 
     await this.studentRepository.update(id, newUpdateStudentDto);
-    await this.lessonsRepository.update({ name: oldName }, { name: newName });
   }
 
   async remove(id: number) {

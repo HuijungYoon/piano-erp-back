@@ -29,17 +29,20 @@ export class MacrosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.macrosService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.macrosService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMacroDto: UpdateMacroDto) {
-    return this.macrosService.update(+id, updateMacroDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateMacroDto: UpdateMacroDto,
+  ) {
+    return await this.macrosService.update(+id, updateMacroDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.macrosService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.macrosService.remove(+id);
   }
 }

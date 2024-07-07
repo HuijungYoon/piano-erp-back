@@ -77,8 +77,6 @@ export class TeachersService {
     const lessons = await this.lessonsRepository.findOne({
       where: { teacher: teacher.name },
     });
-    console.log(lessons);
-
     const name = await this.teachersRepository.findOne({
       where: { name: updateTeacherDto.name },
     });
@@ -90,14 +88,16 @@ export class TeachersService {
       throw new BadRequestException('이미 존재하는 이름입니다.');
     }
 
-    const oldName = (await lessons).teacher;
-    const newName = updateTeacherDto.name;
+    if (lessons) {
+      const oldName = (await lessons).teacher;
+      const newName = updateTeacherDto.name;
+      await this.lessonsRepository.update(
+        { teacher: oldName },
+        { teacher: newName },
+      );
+    }
 
     await this.teachersRepository.update(id, updateTeacherDto);
-    await this.lessonsRepository.update(
-      { teacher: oldName },
-      { teacher: newName },
-    );
   }
 
   async remove(id: number) {

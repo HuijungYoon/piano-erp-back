@@ -43,9 +43,25 @@ export class TeachersController {
   @ApiCookieAuth('connect.sid')
   @UseGuards(LoggedInGuard)
   @Post('logout')
-  async logout(@Res() res) {
+  async logout(@Req() req, @Res() res) {
+    console.log('req.user', req.user);
+    console.log('logout', res);
+
+    if (!req.user) {
+      // 세션이 만료되었거나 유효하지 않은 경우
+      return res.status(403).send('세션이 만료되었거나 유효하지 않습니다.');
+    }
+
     res.clearCookie('connect.sid', { httpOnly: true });
-    return res.send('로그아웃 되셨습니다.');
+    req.logout(); // req.logout()이 passport.js에서 세션을 종료시키는 역할을 합니다.
+
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('세션 종료 오류:', err);
+        return res.status(500).send('로그아웃 중 오류가 발생했습니다.');
+      }
+      res.redirect('/');
+    });
   }
 
   @Get()
