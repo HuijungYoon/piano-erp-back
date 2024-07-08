@@ -40,8 +40,8 @@ async function bootstrap() {
     origin: [
       'http://localhost:3002',
       'https://dosipiano-g5ny7eqoz-huijungyoons-projects.vercel.app/auth/login',
-      'https://dosipiano-erp.vercel.app/',
-      'https://erp.dosipiano.com/',
+      'https://dosipiano-erp.vercel.app',
+      'https://erp.dosipiano.com',
       'erp.dosipiano.com',
     ], // 허용할 도메인 배열
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
