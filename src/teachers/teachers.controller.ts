@@ -52,7 +52,11 @@ export class TeachersController {
       return res.status(403).send('세션이 만료되었거나 유효하지 않습니다.');
     }
 
-    res.clearCookie('connect.sid', { httpOnly: true });
+    res.clearCookie('connect.sid', {
+      httpOnly: true,
+      domain: 'api.dosipiano.com',
+      path: '/',
+    });
     return res.send('로그아웃 되었습니다.');
     //req.logout(); // req.logout()이 passport.js에서 세션을 종료시키는 역할을 합니다.
   }
