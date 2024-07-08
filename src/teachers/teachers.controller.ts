@@ -54,7 +54,7 @@ export class TeachersController {
 
     res.clearCookie('connect.sid', {
       httpOnly: true,
-      domain: 'api.dosipiano.com',
+      domain: 'erp.dosipiano.com',
       path: '/',
     });
     return res.send('로그아웃 되었습니다.');
