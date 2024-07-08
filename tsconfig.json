@@ -13,5 +13,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true
-  }
+  },
+
+  "include": ["src/**/*.ts", "data-source.ts"]
 }
