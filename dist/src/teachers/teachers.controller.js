@@ -33,20 +33,11 @@ let TeachersController = class TeachersController {
         return teacher;
     }
     async logout(req, res) {
-        console.log('req.user', req.user);
-        console.log('logout', res);
         if (!req.user) {
             return res.status(403).send('세션이 만료되었거나 유효하지 않습니다.');
         }
         res.clearCookie('connect.sid', { httpOnly: true });
-        req.logout();
-        req.session.destroy((err) => {
-            if (err) {
-                console.error('세션 종료 오류:', err);
-                return res.status(500).send('로그아웃 중 오류가 발생했습니다.');
-            }
-            res.redirect('/');
-        });
+        return res.send('로그아웃 되었습니다.');
     }
     findAll() {
         return this.teachersService.findAll();
