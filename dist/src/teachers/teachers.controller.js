@@ -36,7 +36,7 @@ let TeachersController = class TeachersController {
         if (!req.user) {
             return res.status(403).send('세션이 만료되었거나 유효하지 않습니다.');
         }
-        res.clearCookie('dosi_piano_secret_key', {
+        res.clearCookie('connect.sid', {
             httpOnly: true,
             domain: process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
             path: '/',
@@ -73,7 +73,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], TeachersController.prototype, "login", null);
 __decorate([
-    (0, swagger_1.ApiCookieAuth)('dosi_piano_secret_key'),
+    (0, swagger_1.ApiCookieAuth)('connect.sid'),
     (0, common_1.UseGuards)(logged_in_guard_1.LoggedInGuard),
     (0, common_1.Post)('logout'),
     __param(0, (0, common_1.Req)()),

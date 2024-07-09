@@ -21,7 +21,7 @@ async function bootstrap() {
         .setVersion('1.0')
         .addCookieAuth('connect.sid')
         .build();
-    app.use((0, cookie_parser_1.default)('dosi_piano_secret_key'));
+    app.use((0, cookie_parser_1.default)());
     app.use((0, express_session_1.default)({
         resave: false,
         saveUninitialized: false,
