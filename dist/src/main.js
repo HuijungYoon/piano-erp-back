@@ -28,7 +28,7 @@ async function bootstrap() {
         secret: process.env.COOKIE_SECRET,
         cookie: {
             httpOnly: true,
-            secure: false,
+            secure: process.env.NODE_ENV === 'production' ? true : false,
             domain: process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
         },
     }));

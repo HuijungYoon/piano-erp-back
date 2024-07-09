@@ -38,7 +38,7 @@ let TeachersController = class TeachersController {
         }
         res.clearCookie('connect.sid', {
             httpOnly: true,
-            domain: 'erp.dosipiano.com',
+            domain: process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
             path: '/',
         });
         return res.send('로그아웃 되었습니다.');
