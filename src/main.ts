@@ -27,7 +27,7 @@ async function bootstrap() {
       secret: process.env.COOKIE_SECRET,
       cookie: {
         httpOnly: true,
-        secure: false, // https를 사용하지 않을 때는 false
+        secure: process.env.NODE_ENV === 'production' ? true : false, // https를 사용하지 않을 때는 false
         domain:
           process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
         // maxAge : 6000 //
