@@ -21,14 +21,13 @@ async function bootstrap() {
         .setVersion('1.0')
         .addCookieAuth('connect.sid')
         .build();
-    app.use((0, cookie_parser_1.default)());
+    app.use((0, cookie_parser_1.default)('dosi_piano_secret_key'));
     app.use((0, express_session_1.default)({
         resave: false,
         saveUninitialized: false,
         secret: process.env.COOKIE_SECRET,
         cookie: {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production' ? true : false,
             domain: process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
         },
     }));
