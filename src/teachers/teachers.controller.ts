@@ -40,7 +40,7 @@ export class TeachersController {
     return teacher;
   }
 
-  @ApiCookieAuth('dosi_piano_secret_key')
+  @ApiCookieAuth('connect.sid')
   @UseGuards(LoggedInGuard)
   @Post('logout')
   async logout(@Req() req, @Res() res) {
@@ -52,7 +52,7 @@ export class TeachersController {
       return res.status(403).send('세션이 만료되었거나 유효하지 않습니다.');
     }
 
-    res.clearCookie('dosi_piano_secret_key', {
+    res.clearCookie('connect.sid', {
       httpOnly: true,
       domain:
         process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,
