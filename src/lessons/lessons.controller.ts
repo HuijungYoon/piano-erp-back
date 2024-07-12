@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
@@ -23,6 +24,21 @@ export class LessonsController {
       createLessonDto.lessontime,
       createLessonDto.lessondate,
       createLessonDto.memo,
+    );
+  }
+
+  @Get('search')
+  search(
+    @Query('startDate') startDate?: Date,
+    @Query('endDate') endDate?: Date,
+    @Query('teacherId') teacherId?: string,
+    @Query('studentName') studentName?: string,
+  ) {
+    return this.lessonsService.search(
+      startDate,
+      endDate,
+      teacherId,
+      studentName,
     );
   }
 

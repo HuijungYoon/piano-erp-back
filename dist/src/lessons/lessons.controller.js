@@ -24,6 +24,9 @@ let LessonsController = class LessonsController {
     create(createLessonDto) {
         return this.lessonsService.create(createLessonDto.name, createLessonDto.teacher, createLessonDto.lessontime, createLessonDto.lessondate, createLessonDto.memo);
     }
+    search(startDate, endDate, teacherId, studentName) {
+        return this.lessonsService.search(startDate, endDate, teacherId, studentName);
+    }
     findAll() {
         return this.lessonsService.findAll();
     }
@@ -45,6 +48,17 @@ __decorate([
     __metadata("design:paramtypes", [create_lesson_dto_1.CreateLessonDto]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Get)('search'),
+    __param(0, (0, common_1.Query)('startDate')),
+    __param(1, (0, common_1.Query)('endDate')),
+    __param(2, (0, common_1.Query)('teacherId')),
+    __param(3, (0, common_1.Query)('studentName')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Date,
+        Date, String, String]),
+    __metadata("design:returntype", void 0)
+], LessonsController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),

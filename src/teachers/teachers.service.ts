@@ -7,7 +7,7 @@ import {
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Teachers } from 'src/entities/Teachers';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Lessons } from 'src/entities/Lessons';
 @Injectable()
@@ -73,12 +73,14 @@ export class TeachersService {
   async update(id: number, updateTeacherDto: UpdateTeacherDto) {
     const teacher = await this.teachersRepository.findOne({
       where: { id },
+      select: ['id', 'teacherId', 'name', 'tel', 'password'],
     });
     const lessons = await this.lessonsRepository.findOne({
       where: { teacher: teacher.name },
     });
+
     const name = await this.teachersRepository.findOne({
-      where: { name: updateTeacherDto.name },
+      where: { name: updateTeacherDto.name, id: Not(id) },
     });
 
     if (!teacher) {
@@ -96,6 +98,25 @@ export class TeachersService {
         { teacher: newName },
       );
     }
+
+    if (updateTeacherDto.password) {
+      const isPasswordSame = await bcrypt.compare(
+        updateTeacherDto.password,
+        teacher.password,
+      );
+
+      if (!isPasswordSame) {
+        // 비밀번호가 다르면 새로운 비밀번호로 해시하여 업데이트
+        const hashedPassword = await bcrypt.hash(updateTeacherDto.password, 12);
+        updateTeacherDto.password = hashedPassword;
+      } else {
+        updateTeacherDto.password = teacher.password;
+      }
+    } else {
+      delete updateTeacherDto.password;
+    }
+
+    console.log('updateTeacherDto', updateTeacherDto.password);
 
     await this.teachersRepository.update(id, updateTeacherDto);
   }

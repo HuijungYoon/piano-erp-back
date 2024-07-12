@@ -3,8 +3,19 @@ import { CreateSmssDto } from './dto/create-smss.dto';
 import { UpdateSmssDto } from './dto/update-smss.dto';
 import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Students } from 'src/entities/Students';
+import { In, Repository } from 'typeorm';
+import { SMSs } from 'src/entities/SMSs';
 @Injectable()
 export class SmssService {
+  constructor(
+    @InjectRepository(Students)
+    private studentsRepository: Repository<Students>,
+    @InjectRepository(SMSs)
+    private smssRepository: Repository<SMSs>,
+  ) {}
+
   private readonly uri = 'ncp:sms:kr:264435441348:atn';
   private readonly accessKey = 'jOlA1TzZeaxfiRSdHSKO'; // access key id (from portal or Sub Account)
   private readonly secretKey = 'NHBTQYWA0ZvjkfRb5Gbm09MR9Jvb0ZU216nJTByH'; // secret key (from portal or Sub Account)
@@ -32,7 +43,16 @@ export class SmssService {
     return signature;
   }
 
-  async sendSMS(to: string, content: string): Promise<any> {
+  async sendSMS(to: string[], content: string): Promise<any> {
+    const students = await this.studentsRepository.find({
+      where: {
+        tel: In(to),
+      },
+      relations: ['lessons'],
+    });
+
+    console.log('students', students[0].lessons);
+
     const date = Date.now().toString();
     const signature = this.makeSignature();
 

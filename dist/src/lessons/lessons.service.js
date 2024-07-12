@@ -18,14 +18,19 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const Lessons_1 = require("../entities/Lessons");
 const Students_1 = require("../entities/Students");
+const Teachers_1 = require("../entities/Teachers");
 let LessonsService = class LessonsService {
-    constructor(lessonsRepository, studentsRepository) {
+    constructor(lessonsRepository, studentsRepository, teachersRepository) {
         this.lessonsRepository = lessonsRepository;
         this.studentsRepository = studentsRepository;
+        this.teachersRepository = teachersRepository;
     }
     async create(name, teacher, lessontime, lessondate, memo) {
         const student = await this.studentsRepository.findOne({
             where: { name },
+        });
+        const findTeacher = await this.teachersRepository.findOne({
+            where: { name: teacher },
         });
         if (!student) {
             throw new common_1.UnauthorizedException(`존재하지 않는 학생입니다.`);
@@ -37,6 +42,7 @@ let LessonsService = class LessonsService {
             lessondate,
             memo,
             students: student,
+            teachers: findTeacher,
         });
     }
     findAll() {
@@ -54,6 +60,23 @@ let LessonsService = class LessonsService {
             throw new common_1.BadRequestException(`존재하지 않는 수업입니다.`);
         }
         return lesson;
+    }
+    async search(startDate, endDate, teacherId, studentName) {
+        const query = this.lessonsRepository
+            .createQueryBuilder('lessons')
+            .leftJoinAndSelect('lessons.students', 'students')
+            .where('lessons.lessondate >= :startDate', { startDate })
+            .andWhere('lessons.lessonDate <= :endDate', { endDate });
+        if (teacherId) {
+            query.andWhere('teacher.id = :teacherId', { teacherId });
+        }
+        if (studentName) {
+            query.andWhere('students.name LIKE :studentName', {
+                studentName: `%${studentName}%`,
+            });
+        }
+        const lessons = await query.getMany();
+        return lessons;
     }
     async update(id, updateLessonDto) {
         const lesson = await this.lessonsRepository.findOne({
@@ -79,7 +102,9 @@ exports.LessonsService = LessonsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(Lessons_1.Lessons)),
     __param(1, (0, typeorm_1.InjectRepository)(Students_1.Students)),
+    __param(2, (0, typeorm_1.InjectRepository)(Teachers_1.Teachers)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository,
         typeorm_2.Repository])
 ], LessonsService);
 //# sourceMappingURL=lessons.service.js.map

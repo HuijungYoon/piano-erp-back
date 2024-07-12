@@ -5,6 +5,7 @@ export declare class LessonsController {
     private readonly lessonsService;
     constructor(lessonsService: LessonsService);
     create(createLessonDto: CreateLessonDto): Promise<void>;
+    search(startDate?: Date, endDate?: Date, teacherId?: string, studentName?: string): Promise<import("../entities/Lessons").Lessons[]>;
     findAll(): Promise<import("../entities/Lessons").Lessons[]>;
     findOne(id: string): Promise<import("../entities/Lessons").Lessons>;
     update(id: string, updateLessonDto: UpdateLessonDto): Promise<void>;

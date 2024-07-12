@@ -88,12 +88,13 @@ let TeachersService = class TeachersService {
     async update(id, updateTeacherDto) {
         const teacher = await this.teachersRepository.findOne({
             where: { id },
+            select: ['id', 'teacherId', 'name', 'tel', 'password'],
         });
         const lessons = await this.lessonsRepository.findOne({
             where: { teacher: teacher.name },
         });
         const name = await this.teachersRepository.findOne({
-            where: { name: updateTeacherDto.name },
+            where: { name: updateTeacherDto.name, id: (0, typeorm_2.Not)(id) },
         });
         if (!teacher) {
             throw new common_1.BadRequestException('존재하지 않는 아이디입니다.');
@@ -106,6 +107,20 @@ let TeachersService = class TeachersService {
             const newName = updateTeacherDto.name;
             await this.lessonsRepository.update({ teacher: oldName }, { teacher: newName });
         }
+        if (updateTeacherDto.password) {
+            const isPasswordSame = await bcrypt.compare(updateTeacherDto.password, teacher.password);
+            if (!isPasswordSame) {
+                const hashedPassword = await bcrypt.hash(updateTeacherDto.password, 12);
+                updateTeacherDto.password = hashedPassword;
+            }
+            else {
+                updateTeacherDto.password = teacher.password;
+            }
+        }
+        else {
+            delete updateTeacherDto.password;
+        }
+        console.log('updateTeacherDto', updateTeacherDto.password);
         await this.teachersRepository.update(id, updateTeacherDto);
     }
     async remove(id) {

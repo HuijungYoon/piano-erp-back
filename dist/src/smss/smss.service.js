@@ -28,6 +28,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -36,8 +42,14 @@ exports.SmssService = void 0;
 const common_1 = require("@nestjs/common");
 const axios_1 = __importDefault(require("axios"));
 const CryptoJS = __importStar(require("crypto-js"));
+const typeorm_1 = require("@nestjs/typeorm");
+const Students_1 = require("../entities/Students");
+const typeorm_2 = require("typeorm");
+const SMSs_1 = require("../entities/SMSs");
 let SmssService = class SmssService {
-    constructor() {
+    constructor(studentsRepository, smssRepository) {
+        this.studentsRepository = studentsRepository;
+        this.smssRepository = smssRepository;
         this.uri = 'ncp:sms:kr:264435441348:atn';
         this.accessKey = 'jOlA1TzZeaxfiRSdHSKO';
         this.secretKey = 'NHBTQYWA0ZvjkfRb5Gbm09MR9Jvb0ZU216nJTByH';
@@ -62,6 +74,13 @@ let SmssService = class SmssService {
         return signature;
     }
     async sendSMS(to, content) {
+        const students = await this.studentsRepository.find({
+            where: {
+                tel: (0, typeorm_2.In)(to),
+            },
+            relations: ['lessons'],
+        });
+        console.log('students', students[0].lessons);
         const date = Date.now().toString();
         const signature = this.makeSignature();
         try {
@@ -117,6 +136,10 @@ let SmssService = class SmssService {
 };
 exports.SmssService = SmssService;
 exports.SmssService = SmssService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __param(0, (0, typeorm_1.InjectRepository)(Students_1.Students)),
+    __param(1, (0, typeorm_1.InjectRepository)(SMSs_1.SMSs)),
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        typeorm_2.Repository])
 ], SmssService);
 //# sourceMappingURL=smss.service.js.map

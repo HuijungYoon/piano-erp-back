@@ -46,7 +46,7 @@ __decorate([
     __param(0, (0, common_1.Body)('to')),
     __param(1, (0, common_1.Body)('content')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [Array, String]),
     __metadata("design:returntype", Promise)
 ], SmssController.prototype, "sendSMS", null);
 __decorate([

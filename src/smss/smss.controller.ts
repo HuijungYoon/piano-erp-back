@@ -16,7 +16,7 @@ export class SmssController {
   constructor(private readonly smssService: SmssService) {}
 
   @Post('send')
-  async sendSMS(@Body('to') to: string, @Body('content') content: string) {
+  async sendSMS(@Body('to') to: string[], @Body('content') content: string) {
     return await this.smssService.sendSMS(to, content);
   }
 

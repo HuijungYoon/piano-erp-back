@@ -13,12 +13,13 @@ const lessons_controller_1 = require("./lessons.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const Lessons_1 = require("../entities/Lessons");
 const Students_1 = require("../entities/Students");
+const Teachers_1 = require("../entities/Teachers");
 let LessonsModule = class LessonsModule {
 };
 exports.LessonsModule = LessonsModule;
 exports.LessonsModule = LessonsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([Lessons_1.Lessons, Students_1.Students])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([Lessons_1.Lessons, Students_1.Students, Teachers_1.Teachers])],
         controllers: [lessons_controller_1.LessonsController],
         providers: [lessons_service_1.LessonsService],
     })

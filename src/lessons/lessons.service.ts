@@ -9,6 +9,7 @@ import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Repository } from 'typeorm';
 import { Lessons } from 'src/entities/Lessons';
 import { Students } from 'src/entities/Students';
+import { Teachers } from 'src/entities/Teachers';
 
 @Injectable()
 export class LessonsService {
@@ -17,6 +18,8 @@ export class LessonsService {
     private lessonsRepository: Repository<Lessons>,
     @InjectRepository(Students)
     private studentsRepository: Repository<Students>,
+    @InjectRepository(Teachers)
+    private teachersRepository: Repository<Teachers>,
   ) {}
   async create(
     name: string,
@@ -29,6 +32,10 @@ export class LessonsService {
       where: { name },
     });
 
+    const findTeacher = await this.teachersRepository.findOne({
+      where: { name: teacher },
+    });
+
     if (!student) {
       throw new UnauthorizedException(`존재하지 않는 학생입니다.`);
     }
@@ -39,6 +46,7 @@ export class LessonsService {
       lessondate,
       memo,
       students: student,
+      teachers: findTeacher,
     });
   }
 
@@ -59,6 +67,33 @@ export class LessonsService {
       throw new BadRequestException(`존재하지 않는 수업입니다.`);
     }
     return lesson;
+  }
+
+  async search(
+    startDate: Date,
+    endDate: Date,
+    teacherId?: string,
+    studentName?: string,
+  ) {
+    const query = this.lessonsRepository
+      .createQueryBuilder('lessons')
+      .leftJoinAndSelect('lessons.students', 'students')
+      .where('lessons.lessondate >= :startDate', { startDate })
+      .andWhere('lessons.lessonDate <= :endDate', { endDate });
+
+    if (teacherId) {
+      query.andWhere('teacher.id = :teacherId', { teacherId });
+    }
+
+    if (studentName) {
+      query.andWhere('students.name LIKE :studentName', {
+        studentName: `%${studentName}%`,
+      });
+    }
+
+    const lessons = await query.getMany();
+
+    return lessons;
   }
 
   async update(id: number, updateLessonDto: UpdateLessonDto) {
