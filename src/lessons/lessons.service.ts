@@ -70,20 +70,28 @@ export class LessonsService {
   }
 
   async search(
-    startDate: Date,
-    endDate: Date,
+    startDate?: Date,
+    endDate?: Date,
     teacherId?: string,
     studentName?: string,
   ) {
     const query = this.lessonsRepository
       .createQueryBuilder('lessons')
       .leftJoinAndSelect('lessons.students', 'students')
-      .where('lessons.lessondate >= :startDate', { startDate })
-      .andWhere('lessons.lessonDate <= :endDate', { endDate });
+      .leftJoinAndSelect('lessons.teachers', 'teachers');
+
+    if (startDate) {
+      query.andWhere('lessons.lessondate >= :startDate', { startDate });
+    }
+
+    if (endDate) {
+      query.andWhere('lessons.lessondate <= :endDate', { endDate });
+    }
 
     if (teacherId) {
-      query.andWhere('teacher.id = :teacherId', { teacherId });
+      query.andWhere('teachers.teacherId = :teacherId', { teacherId });
     }
+    query.orderBy('lessons.lessondate', 'DESC');
 
     if (studentName) {
       query.andWhere('students.name LIKE :studentName', {
@@ -92,6 +100,7 @@ export class LessonsService {
     }
 
     const lessons = await query.getMany();
+    console.log('lessons', lessons);
 
     return lessons;
   }

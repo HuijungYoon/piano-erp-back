@@ -11,7 +11,7 @@ export declare class LessonsService {
     create(name: string, teacher: string, lessontime: string, lessondate: Date, memo: string): Promise<void>;
     findAll(): Promise<Lessons[]>;
     findOne(id: number): Promise<Lessons>;
-    search(startDate: Date, endDate: Date, teacherId?: string, studentName?: string): Promise<Lessons[]>;
+    search(startDate?: Date, endDate?: Date, teacherId?: string, studentName?: string): Promise<Lessons[]>;
     update(id: number, updateLessonDto: UpdateLessonDto): Promise<void>;
     remove(id: number): Promise<void>;
 }

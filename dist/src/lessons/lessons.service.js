@@ -65,17 +65,24 @@ let LessonsService = class LessonsService {
         const query = this.lessonsRepository
             .createQueryBuilder('lessons')
             .leftJoinAndSelect('lessons.students', 'students')
-            .where('lessons.lessondate >= :startDate', { startDate })
-            .andWhere('lessons.lessonDate <= :endDate', { endDate });
-        if (teacherId) {
-            query.andWhere('teacher.id = :teacherId', { teacherId });
+            .leftJoinAndSelect('lessons.teachers', 'teachers');
+        if (startDate) {
+            query.andWhere('lessons.lessondate >= :startDate', { startDate });
         }
+        if (endDate) {
+            query.andWhere('lessons.lessondate <= :endDate', { endDate });
+        }
+        if (teacherId) {
+            query.andWhere('teachers.teacherId = :teacherId', { teacherId });
+        }
+        query.orderBy('lessons.lessondate', 'DESC');
         if (studentName) {
             query.andWhere('students.name LIKE :studentName', {
                 studentName: `%${studentName}%`,
             });
         }
         const lessons = await query.getMany();
+        console.log('lessons', lessons);
         return lessons;
     }
     async update(id, updateLessonDto) {
