@@ -45,6 +45,7 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "crypto-js": "^4.2.0",
+    "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.0",
     "mysql2": "^3.10.1",
     "passport": "^0.7.0",

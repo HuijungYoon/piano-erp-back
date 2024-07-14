@@ -46,6 +46,10 @@ let TeachersController = class TeachersController {
     findAll() {
         return this.teachersService.findAll();
     }
+    me(teacher) {
+        console.log('teacher', teacher);
+        return teacher;
+    }
     findOne(id) {
         return this.teachersService.findOne(+id);
     }
@@ -88,6 +92,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], TeachersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('me'),
+    __param(0, (0, teacher_decorator_1.Teacher)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Teachers_1.Teachers]),
+    __metadata("design:returntype", void 0)
+], TeachersController.prototype, "me", null);
 __decorate([
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),

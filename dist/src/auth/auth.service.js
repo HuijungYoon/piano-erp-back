@@ -37,7 +37,6 @@ let AuthService = class AuthService {
         this.teachersRepository = teachersRepository;
     }
     async validateTeacher(teacherId, password) {
-        console.log('AuthService validateTeacher:', { teacherId, password });
         const teacher = await this.teachersRepository.findOne({
             where: { teacherId },
             select: ['id', 'teacherId', 'password', 'name', 'level'],

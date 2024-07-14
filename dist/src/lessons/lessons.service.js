@@ -82,15 +82,32 @@ let LessonsService = class LessonsService {
             });
         }
         const lessons = await query.getMany();
-        console.log('lessons', lessons);
         return lessons;
     }
     async update(id, updateLessonDto) {
         const lesson = await this.lessonsRepository.findOne({
             where: { id },
+            relations: ['students'],
         });
         if (!lesson) {
             throw new common_1.BadRequestException(`존재하지 않는 수업입니다.`);
+        }
+        console.log('lesson.student', lesson.students);
+        if (updateLessonDto.name && updateLessonDto.name !== lesson.students.name) {
+            const student = await this.studentsRepository.findOne({
+                where: { tel: updateLessonDto.name.split('(')[1].slice(0, -1) },
+                relations: ['lessons'],
+            });
+            console.log('name', updateLessonDto.name.split('(')[1].slice(0, -1));
+            console.log('student', student);
+            if (!student) {
+                throw new common_1.BadRequestException(`존재하지 않는 학생입니다.`);
+            }
+            if (lesson.students.lessons) {
+                lesson.students.lessons = lesson.students.lessons.filter((l) => l.id !== lesson.id);
+            }
+            student.lessons.push(lesson);
+            await this.studentsRepository.save(student);
         }
         await this.lessonsRepository.update(id, updateLessonDto);
     }

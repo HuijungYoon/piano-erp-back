@@ -3,12 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
-import { StudentsService } from './students/students.service';
-import { StudentsController } from './students/students.controller';
-import { TeachersController } from './teachers/teachers.controller';
-import { TeachersService } from './teachers/teachers.service';
-import { MacrosController } from './macros/macros.controller';
-import { MacrosService } from './macros/macros.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Macros } from './entities/Macros';

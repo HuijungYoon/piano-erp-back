@@ -12,7 +12,6 @@ export class AuthService {
   ) {}
 
   async validateTeacher(teacherId: string, password: string) {
-    console.log('AuthService validateTeacher:', { teacherId, password }); // 로그 추가
     const teacher = await this.teachersRepository.findOne({
       where: { teacherId },
       select: ['id', 'teacherId', 'password', 'name', 'level'],

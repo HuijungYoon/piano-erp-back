@@ -66,6 +66,12 @@ export class TeachersController {
     return this.teachersService.findAll();
   }
 
+  @Get('me')
+  me(@Teacher() teacher: Teachers) {
+    console.log('teacher', teacher);
+    return teacher;
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.teachersService.findOne(+id);

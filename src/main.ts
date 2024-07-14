@@ -6,7 +6,10 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import passport from 'passport';
+
 declare const module: any;
+
+const MySQLStore = require('express-mysql-session')(session);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,11 +23,25 @@ async function bootstrap() {
     .build();
 
   app.use(cookieParser());
+
+  // MySQL 세션 저장소 설정
+  const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    port: 3306,
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    clearExpired: true,
+    checkExpirationInterval: 900000, // 15분마다 만료된 세션 정리
+    expiration: 86400000, // 세션 만료 시간 (1일)
+  });
+
   app.use(
     session({
       resave: false,
       saveUninitialized: false,
       secret: process.env.COOKIE_SECRET,
+      store: sessionStore,
       cookie: {
         httpOnly: true,
         //secure: process.env.NODE_ENV === 'production' ? true : false, // https를 사용하지 않을 때는 false

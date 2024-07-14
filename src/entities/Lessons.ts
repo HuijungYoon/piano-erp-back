@@ -41,7 +41,9 @@ export class Lessons {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @ManyToOne(() => Students, (student) => student.lessons)
+  @ManyToOne(() => Students, (student) => student.lessons, {
+    onDelete: 'SET NULL',
+  })
   students: Students;
 
   @ManyToOne(() => Teachers, (teacher) => teacher.lessons)

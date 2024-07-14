@@ -12,6 +12,7 @@ import { LocalStrategy } from './local.strategy';
     PassportModule.register({ session: true }),
     TypeOrmModule.forFeature([Teachers]),
   ],
+
   providers: [AuthService, LocalStrategy, LocalSerializer],
 })
 export class AuthModule {}

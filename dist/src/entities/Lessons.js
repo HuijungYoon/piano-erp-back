@@ -53,7 +53,9 @@ __decorate([
     __metadata("design:type", Date)
 ], Lessons.prototype, "deletedAt", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => Students_1.Students, (student) => student.lessons),
+    (0, typeorm_1.ManyToOne)(() => Students_1.Students, (student) => student.lessons, {
+        onDelete: 'SET NULL',
+    }),
     __metadata("design:type", Students_1.Students)
 ], Lessons.prototype, "students", void 0);
 __decorate([

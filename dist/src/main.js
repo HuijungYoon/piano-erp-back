@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const express_session_1 = __importDefault(require("express-session"));
 const passport_1 = __importDefault(require("passport"));
+const MySQLStore = require('express-mysql-session')(express_session_1.default);
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useGlobalPipes(new common_1.ValidationPipe());
@@ -22,10 +23,21 @@ async function bootstrap() {
         .addCookieAuth('connect.sid')
         .build();
     app.use((0, cookie_parser_1.default)());
+    const sessionStore = new MySQLStore({
+        host: process.env.DB_HOST,
+        port: 3306,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+        clearExpired: true,
+        checkExpirationInterval: 900000,
+        expiration: 86400000,
+    });
     app.use((0, express_session_1.default)({
         resave: false,
         saveUninitialized: false,
         secret: process.env.COOKIE_SECRET,
+        store: sessionStore,
         cookie: {
             httpOnly: true,
             domain: process.env.NODE_ENV === 'production' ? '.dosipiano.com' : undefined,

@@ -100,7 +100,6 @@ export class LessonsService {
     }
 
     const lessons = await query.getMany();
-    console.log('lessons', lessons);
 
     return lessons;
   }
@@ -108,10 +107,38 @@ export class LessonsService {
   async update(id: number, updateLessonDto: UpdateLessonDto) {
     const lesson = await this.lessonsRepository.findOne({
       where: { id },
+      relations: ['students'], // student 관계를 포함하여 조회
     });
 
     if (!lesson) {
       throw new BadRequestException(`존재하지 않는 수업입니다.`);
+    }
+
+    console.log('lesson.student', lesson.students);
+    // 학생 정보가 변경되었는지 확인
+    if (updateLessonDto.name && updateLessonDto.name !== lesson.students.name) {
+      const student = await this.studentsRepository.findOne({
+        where: { tel: updateLessonDto.name.split('(')[1].slice(0, -1) },
+        relations: ['lessons'],
+      });
+      console.log('name', updateLessonDto.name.split('(')[1].slice(0, -1));
+      console.log('student', student);
+
+      if (!student) {
+        throw new BadRequestException(`존재하지 않는 학생입니다.`);
+      }
+
+      // 기존 학생의 lessons에서 이 수업을 제거
+      if (lesson.students.lessons) {
+        lesson.students.lessons = lesson.students.lessons.filter(
+          (l) => l.id !== lesson.id,
+        );
+      }
+
+      // 새 학생의 lessons에 이 수업을 추가
+      student.lessons.push(lesson);
+
+      await this.studentsRepository.save(student);
     }
 
     await this.lessonsRepository.update(id, updateLessonDto);
