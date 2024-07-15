@@ -69,11 +69,22 @@ let TeachersService = class TeachersService {
             level,
         });
     }
-    async findAll() {
-        const teachers = await this.teachersRepository.find({
-            relations: ['students'],
-        });
-        return teachers;
+    async findAll(teacher) {
+        if (!teacher) {
+            throw new common_1.BadRequestException('사용자 정보가 없습니다.');
+        }
+        if (teacher.level === 'admin') {
+            return await this.teachersRepository.find({
+                relations: ['students'],
+            });
+        }
+        if (teacher.level === 'teacher') {
+            const teacherData = await this.teachersRepository.findOne({
+                where: { id: teacher.id },
+                relations: ['students'],
+            });
+            return teacherData ? [teacherData] : [];
+        }
     }
     async findOne(id) {
         const teacher = await this.teachersRepository.findOne({

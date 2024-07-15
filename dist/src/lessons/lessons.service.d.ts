@@ -9,9 +9,9 @@ export declare class LessonsService {
     private teachersRepository;
     constructor(lessonsRepository: Repository<Lessons>, studentsRepository: Repository<Students>, teachersRepository: Repository<Teachers>);
     create(name: string, teacher: string, lessontime: string, lessondate: Date, memo: string): Promise<void>;
-    findAll(): Promise<Lessons[]>;
+    findAll(teacher: any): Promise<Lessons[]>;
     findOne(id: number): Promise<Lessons>;
-    search(startDate?: Date, endDate?: Date, teacherId?: string, studentName?: string): Promise<Lessons[]>;
+    search(startDate?: Date, endDate?: Date, teacherId?: string, studentName?: string, teacher?: any): Promise<Lessons[]>;
     update(id: number, updateLessonDto: UpdateLessonDto): Promise<void>;
     remove(id: number): Promise<void>;
 }

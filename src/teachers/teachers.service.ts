@@ -51,11 +51,29 @@ export class TeachersService {
     });
   }
 
-  async findAll() {
-    const teachers = await this.teachersRepository.find({
-      relations: ['students'],
-    });
-    return teachers;
+  async findAll(teacher: Teachers) {
+    if (!teacher) {
+      throw new BadRequestException('사용자 정보가 없습니다.');
+    }
+
+    if (teacher.level === 'admin') {
+      return await this.teachersRepository.find({
+        relations: ['students'],
+      });
+    }
+
+    if (teacher.level === 'teacher') {
+      const teacherData = await this.teachersRepository.findOne({
+        where: { id: teacher.id },
+        relations: ['students'],
+      });
+      return teacherData ? [teacherData] : [];
+    }
+
+    // const teachers = await this.teachersRepository.find({
+    //   relations: ['students'],
+    // });
+    // return teachers;
   }
 
   async findOne(id: number) {

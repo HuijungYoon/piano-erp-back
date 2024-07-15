@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const lessons_service_1 = require("./lessons.service");
 const create_lesson_dto_1 = require("./dto/create-lesson.dto");
 const update_lesson_dto_1 = require("./dto/update-lesson.dto");
+const teacher_decorator_1 = require("../common/decorators/teacher.decorator");
 let LessonsController = class LessonsController {
     constructor(lessonsService) {
         this.lessonsService = lessonsService;
@@ -24,11 +25,11 @@ let LessonsController = class LessonsController {
     create(createLessonDto) {
         return this.lessonsService.create(createLessonDto.name, createLessonDto.teacher, createLessonDto.lessontime, createLessonDto.lessondate, createLessonDto.memo);
     }
-    search(startDate, endDate, teacherId, studentName) {
-        return this.lessonsService.search(startDate, endDate, teacherId, studentName);
+    search(startDate, endDate, teacherId, studentName, teacher) {
+        return this.lessonsService.search(startDate, endDate, teacherId, studentName, teacher);
     }
-    findAll() {
-        return this.lessonsService.findAll();
+    findAll(teacher) {
+        return this.lessonsService.findAll(teacher);
     }
     findOne(id) {
         return this.lessonsService.findOne(+id);
@@ -54,15 +55,17 @@ __decorate([
     __param(1, (0, common_1.Query)('endDate')),
     __param(2, (0, common_1.Query)('teacherId')),
     __param(3, (0, common_1.Query)('studentName')),
+    __param(4, (0, teacher_decorator_1.Teacher)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Date,
-        Date, String, String]),
+        Date, String, String, Object]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, teacher_decorator_1.Teacher)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], LessonsController.prototype, "findAll", null);
 __decorate([

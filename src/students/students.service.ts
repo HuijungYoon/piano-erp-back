@@ -62,19 +62,32 @@ export class StudentsService {
     });
   }
 
-  async findAll() {
+  async findAll(teacher) {
     // const students = this.studentRepository.find({
     //   relations: ['teacher'],
     //   where: { closeday: null },
     // });
-    const students = await this.studentRepository
+
+    const query = this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
       .leftJoinAndSelect('student.lessons', 'lessons')
       .orderBy('student.id', 'DESC')
-      .where('student.closeday IS NULL')
-      .getMany();
-    return students;
+      .where('student.closeday IS NULL');
+
+    // const students = await this.studentRepository
+    //   .createQueryBuilder('student')
+    //   .leftJoinAndSelect('student.teacher', 'teacher')
+    //   .leftJoinAndSelect('student.lessons', 'lessons')
+    //   .orderBy('student.id', 'DESC')
+    //   .where('student.closeday IS NULL')
+    //   .getMany();
+    // teacher가 'teacher' 레벨일 경우 자신의 학생만 조회
+    if (teacher?.level === 'teacher') {
+      query.andWhere('teacher.id = :teacherId', { teacherId: teacher.id });
+    }
+    return query.getMany();
+    //return students;
   }
 
   findOne(id: number) {
@@ -88,15 +101,29 @@ export class StudentsService {
     return student;
   }
 
-  async search(teacherId?: string, studentName?: string, status?: string) {
+  async search(
+    teacherId?: string,
+    studentName?: string,
+    status?: string,
+    teacher?: Teachers,
+  ) {
     const query = this.studentRepository
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
       .where('student.deletedAt IS NULL');
 
-    if (teacherId) {
+    //전체조회
+    if (teacherId && teacher.level === 'admin') {
       query.andWhere('teacher.teacherId = :teacherId', { teacherId });
     }
+    // 자기학생만조회
+    if (teacher?.level === 'teacher') {
+      query.andWhere('teacher.id = :teacherId', { teacherId: teacher.id });
+    }
+
+    // if (teacherId) {
+    //   query.andWhere('teacher.teacherId = :teacherId', { teacherId });
+    // }
     if (studentName) {
       query.andWhere('student.name LIKE :studentName', {
         studentName: `%${studentName}%`,

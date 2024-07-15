@@ -45,11 +45,19 @@ let LessonsService = class LessonsService {
             teachers: findTeacher,
         });
     }
-    findAll() {
-        const lessons = this.lessonsRepository.find({
-            relations: ['students'],
-            order: { lessondate: 'DESC' },
-        });
+    async findAll(teacher) {
+        if (!teacher) {
+            throw new common_1.BadRequestException(`사용자 정보가 없습니다.`);
+        }
+        const query = this.lessonsRepository
+            .createQueryBuilder('lesson')
+            .leftJoinAndSelect('lesson.students', 'students')
+            .leftJoinAndSelect('lesson.teachers', 'teachers')
+            .orderBy('lesson.lessondate', 'DESC');
+        if (teacher.level === 'teacher') {
+            query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
+        }
+        const lessons = await query.getMany();
         return lessons;
     }
     async findOne(id) {
@@ -61,19 +69,22 @@ let LessonsService = class LessonsService {
         }
         return lesson;
     }
-    async search(startDate, endDate, teacherId, studentName) {
+    async search(startDate, endDate, teacherId, studentName, teacher) {
         const query = this.lessonsRepository
             .createQueryBuilder('lessons')
             .leftJoinAndSelect('lessons.students', 'students')
             .leftJoinAndSelect('lessons.teachers', 'teachers');
+        if (teacher.level === 'admin' && teacherId) {
+            query.andWhere('teachers.teacherId = :teacherId', { teacherId });
+        }
+        if (teacher.level === 'teacher') {
+            query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
+        }
         if (startDate) {
             query.andWhere('lessons.lessondate >= :startDate', { startDate });
         }
         if (endDate) {
             query.andWhere('lessons.lessondate <= :endDate', { endDate });
-        }
-        if (teacherId) {
-            query.andWhere('teachers.teacherId = :teacherId', { teacherId });
         }
         query.orderBy('lessons.lessondate', 'DESC');
         if (studentName) {

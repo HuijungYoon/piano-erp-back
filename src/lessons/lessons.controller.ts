@@ -11,6 +11,7 @@ import {
 import { LessonsService } from './lessons.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { Teacher } from 'src/common/decorators/teacher.decorator';
 
 @Controller('api/lessons')
 export class LessonsController {
@@ -33,18 +34,20 @@ export class LessonsController {
     @Query('endDate') endDate?: Date,
     @Query('teacherId') teacherId?: string,
     @Query('studentName') studentName?: string,
+    @Teacher() teacher?: any,
   ) {
     return this.lessonsService.search(
       startDate,
       endDate,
       teacherId,
       studentName,
+      teacher,
     );
   }
 
   @Get()
-  findAll() {
-    return this.lessonsService.findAll();
+  findAll(@Teacher() teacher?: any) {
+    return this.lessonsService.findAll(teacher);
   }
 
   @Get(':id')

@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const students_service_1 = require("./students.service");
 const update_student_dto_1 = require("./dto/update-student.dto");
 const create_student_dto_1 = require("./dto/create-student.dto");
+const teacher_decorator_1 = require("../common/decorators/teacher.decorator");
 let StudentsController = class StudentsController {
     constructor(studentsService) {
         this.studentsService = studentsService;
@@ -24,11 +25,11 @@ let StudentsController = class StudentsController {
     async create(createStudentDto) {
         await this.studentsService.create(createStudentDto.name, createStudentDto.progress, createStudentDto.paymentdue, createStudentDto.age, createStudentDto.tutionfee, createStudentDto.tel, createStudentDto.teacher, createStudentDto.address, createStudentDto.memo, createStudentDto.register, createStudentDto.closeday);
     }
-    search(teacherId, studentName, status) {
-        return this.studentsService.search(teacherId, studentName, status);
+    search(teacherId, studentName, status, teacher) {
+        return this.studentsService.search(teacherId, studentName, status, teacher);
     }
-    findAll() {
-        return this.studentsService.findAll();
+    findAll(teacher) {
+        return this.studentsService.findAll(teacher);
     }
     findOne(id) {
         return this.studentsService.findOne(+id);
@@ -53,14 +54,16 @@ __decorate([
     __param(0, (0, common_1.Query)('teacherId')),
     __param(1, (0, common_1.Query)('studentName')),
     __param(2, (0, common_1.Query)('status')),
+    __param(3, (0, teacher_decorator_1.Teacher)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, Object]),
     __metadata("design:returntype", void 0)
 ], StudentsController.prototype, "search", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, teacher_decorator_1.Teacher)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], StudentsController.prototype, "findAll", null);
 __decorate([

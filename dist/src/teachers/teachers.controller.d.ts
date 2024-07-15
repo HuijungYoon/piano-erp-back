@@ -8,7 +8,7 @@ export declare class TeachersController {
     create(createTeacherDto: CreateTeacherDto): Promise<void>;
     login(teacher: Teachers): Promise<Teachers>;
     logout(req: any, res: any): Promise<any>;
-    findAll(): Promise<Teachers[]>;
+    findAll(teacher: Teachers): Promise<Teachers[]>;
     me(teacher: Teachers): Teachers;
     findOne(id: number): Promise<Teachers>;
     update(id: number, updateTeacherDto: UpdateTeacherDto): Promise<void>;

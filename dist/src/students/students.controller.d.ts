@@ -5,8 +5,8 @@ export declare class StudentsController {
     private readonly studentsService;
     constructor(studentsService: StudentsService);
     create(createStudentDto: CreateStudentDto): Promise<void>;
-    search(teacherId?: string, studentName?: string, status?: string): Promise<import("../entities/Students").Students[]>;
-    findAll(): Promise<import("../entities/Students").Students[]>;
+    search(teacherId?: string, studentName?: string, status?: string, teacher?: any): Promise<import("../entities/Students").Students[]>;
+    findAll(teacher?: any): Promise<import("../entities/Students").Students[]>;
     findOne(id: string): Promise<import("../entities/Students").Students>;
     update(id: string, updateStudentDto: UpdateStudentDto): Promise<void>;
     remove(id: string): Promise<void>;

@@ -50,13 +50,28 @@ export class LessonsService {
     });
   }
 
-  findAll() {
-    const lessons = this.lessonsRepository.find({
-      relations: ['students'],
-      order: { lessondate: 'DESC' },
-    });
+  async findAll(teacher) {
+    if (!teacher) {
+      throw new BadRequestException(`사용자 정보가 없습니다.`);
+    }
 
+    const query = this.lessonsRepository
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.students', 'students')
+      .leftJoinAndSelect('lesson.teachers', 'teachers')
+      .orderBy('lesson.lessondate', 'DESC');
+
+    if (teacher.level === 'teacher') {
+      query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
+    }
+    const lessons = await query.getMany();
     return lessons;
+    // const lessons = this.lessonsRepository.find({
+    //   relations: ['students'],
+    //   order: { lessondate: 'DESC' },
+    // });
+
+    // return lessons;
   }
 
   async findOne(id: number) {
@@ -74,11 +89,22 @@ export class LessonsService {
     endDate?: Date,
     teacherId?: string,
     studentName?: string,
+    teacher?: any,
   ) {
     const query = this.lessonsRepository
       .createQueryBuilder('lessons')
       .leftJoinAndSelect('lessons.students', 'students')
       .leftJoinAndSelect('lessons.teachers', 'teachers');
+
+    // 전체 조회
+    if (teacher.level === 'admin' && teacherId) {
+      query.andWhere('teachers.teacherId = :teacherId', { teacherId });
+    }
+
+    // 자기 학생만 조회
+    if (teacher.level === 'teacher') {
+      query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
+    }
 
     if (startDate) {
       query.andWhere('lessons.lessondate >= :startDate', { startDate });
@@ -88,9 +114,9 @@ export class LessonsService {
       query.andWhere('lessons.lessondate <= :endDate', { endDate });
     }
 
-    if (teacherId) {
-      query.andWhere('teachers.teacherId = :teacherId', { teacherId });
-    }
+    // if (teacherId) {
+    //   query.andWhere('teachers.teacherId = :teacherId', { teacherId });
+    // }
     query.orderBy('lessons.lessondate', 'DESC');
 
     if (studentName) {

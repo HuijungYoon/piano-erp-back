@@ -62,13 +62,12 @@ export class TeachersController {
   }
 
   @Get()
-  findAll() {
-    return this.teachersService.findAll();
+  findAll(@Teacher() teacher: Teachers) {
+    return this.teachersService.findAll(teacher);
   }
 
   @Get('me')
   me(@Teacher() teacher: Teachers) {
-    console.log('teacher', teacher);
     return teacher;
   }
 

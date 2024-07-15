@@ -12,6 +12,7 @@ import { StudentsService } from './students.service';
 
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { Teacher } from 'src/common/decorators/teacher.decorator';
 
 @Controller('api/students')
 export class StudentsController {
@@ -39,13 +40,14 @@ export class StudentsController {
     @Query('teacherId') teacherId?: string,
     @Query('studentName') studentName?: string,
     @Query('status') status?: string,
+    @Teacher() teacher?: any,
   ) {
-    return this.studentsService.search(teacherId, studentName, status);
+    return this.studentsService.search(teacherId, studentName, status, teacher);
   }
 
   @Get()
-  findAll() {
-    return this.studentsService.findAll();
+  findAll(@Teacher() teacher?: any) {
+    return this.studentsService.findAll(teacher);
   }
 
   @Get(':id')

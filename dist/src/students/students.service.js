@@ -52,15 +52,17 @@ let StudentsService = class StudentsService {
             paymentdue,
         });
     }
-    async findAll() {
-        const students = await this.studentRepository
+    async findAll(teacher) {
+        const query = this.studentRepository
             .createQueryBuilder('student')
             .leftJoinAndSelect('student.teacher', 'teacher')
             .leftJoinAndSelect('student.lessons', 'lessons')
             .orderBy('student.id', 'DESC')
-            .where('student.closeday IS NULL')
-            .getMany();
-        return students;
+            .where('student.closeday IS NULL');
+        if ((teacher === null || teacher === void 0 ? void 0 : teacher.level) === 'teacher') {
+            query.andWhere('teacher.id = :teacherId', { teacherId: teacher.id });
+        }
+        return query.getMany();
     }
     findOne(id) {
         const student = this.studentRepository.findOne({
@@ -72,13 +74,16 @@ let StudentsService = class StudentsService {
         }
         return student;
     }
-    async search(teacherId, studentName, status) {
+    async search(teacherId, studentName, status, teacher) {
         const query = this.studentRepository
             .createQueryBuilder('student')
             .leftJoinAndSelect('student.teacher', 'teacher')
             .where('student.deletedAt IS NULL');
-        if (teacherId) {
+        if (teacherId && teacher.level === 'admin') {
             query.andWhere('teacher.teacherId = :teacherId', { teacherId });
+        }
+        if ((teacher === null || teacher === void 0 ? void 0 : teacher.level) === 'teacher') {
+            query.andWhere('teacher.id = :teacherId', { teacherId: teacher.id });
         }
         if (studentName) {
             query.andWhere('student.name LIKE :studentName', {

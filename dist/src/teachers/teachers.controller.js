@@ -43,11 +43,10 @@ let TeachersController = class TeachersController {
         });
         return res.send('로그아웃 되었습니다.');
     }
-    findAll() {
-        return this.teachersService.findAll();
+    findAll(teacher) {
+        return this.teachersService.findAll(teacher);
     }
     me(teacher) {
-        console.log('teacher', teacher);
         return teacher;
     }
     findOne(id) {
@@ -88,8 +87,9 @@ __decorate([
 ], TeachersController.prototype, "logout", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, teacher_decorator_1.Teacher)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Teachers_1.Teachers]),
     __metadata("design:returntype", void 0)
 ], TeachersController.prototype, "findAll", null);
 __decorate([
