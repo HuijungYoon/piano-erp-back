@@ -96,7 +96,31 @@ function naversmsAPI() {
   //   });
 }
 
+function getByteLength(s: string): number {
+  let byteLength = 0;
+  for (let i = 0; i < s.length; i++) {
+    const code = s.charCodeAt(i);
+    if (code <= 0x7f) {
+      byteLength += 1; // ASCII 문자 (1바이트)
+    } else if (code <= 0x7ff) {
+      byteLength += 2; // 2바이트 문자
+    } else if (code >= 0x800 && code <= 0xffff) {
+      byteLength += 3; // 3바이트 문자
+    } else {
+      byteLength += 4; // 4바이트 문자
+    }
+  }
+  return byteLength;
+}
+
+export function isOver118Bytes(message: string): boolean {
+  console.log('getByteLength(message) ', getByteLength(message));
+  return getByteLength(message) >= 118;
+}
+
 module.exports = {
   naversmsAPI: naversmsAPI,
   makeSignature: makeSignature,
+  getByteLength: getByteLength,
+  isOver118Bytes: isOver118Bytes,
 };

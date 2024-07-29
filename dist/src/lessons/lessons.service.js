@@ -58,11 +58,13 @@ let LessonsService = class LessonsService {
             query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
         }
         const lessons = await query.getMany();
-        return lessons;
+        const lessonsWithId = lessons.map((lesson, index) => (Object.assign(Object.assign({}, lesson), { descid: index + 1 })));
+        return lessonsWithId;
     }
     async findOne(id) {
         const lesson = await this.lessonsRepository.findOne({
             where: { id },
+            relations: ['students'],
         });
         if (!lesson) {
             throw new common_1.BadRequestException(`존재하지 않는 수업입니다.`);
@@ -93,7 +95,8 @@ let LessonsService = class LessonsService {
             });
         }
         const lessons = await query.getMany();
-        return lessons;
+        const lessonsWithId = lessons.map((lesson, index) => (Object.assign(Object.assign({}, lesson), { descid: index + 1 })));
+        return lessonsWithId;
     }
     async update(id, updateLessonDto) {
         const lesson = await this.lessonsRepository.findOne({

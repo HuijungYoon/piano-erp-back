@@ -46,6 +46,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const Students_1 = require("../entities/Students");
 const typeorm_2 = require("typeorm");
 const SMSs_1 = require("../entities/SMSs");
+const smslib_1 = require("../lib/smslib");
 let SmssService = class SmssService {
     constructor(studentsRepository, smssRepository) {
         this.studentsRepository = studentsRepository;
@@ -73,14 +74,15 @@ let SmssService = class SmssService {
         const signature = hash.toString(CryptoJS.enc.Base64);
         return signature;
     }
-    async sendSMS(to, content) {
+    async sendSMS(sendSmssDTo) {
         const students = await this.studentsRepository.find({
             where: {
-                tel: (0, typeorm_2.In)(to),
+                tel: (0, typeorm_2.In)(sendSmssDTo.to),
             },
             relations: ['lessons'],
         });
-        console.log('students', students[0].lessons);
+        console.log((0, smslib_1.isOver118Bytes)(sendSmssDTo.content));
+        console.log('students', students);
         const date = Date.now().toString();
         const signature = this.makeSignature();
         try {
@@ -94,14 +96,14 @@ let SmssService = class SmssService {
                     'x-ncp-apigw-signature-v2': signature,
                 },
                 data: {
-                    type: 'SMS',
+                    type: (0, smslib_1.isOver118Bytes)(sendSmssDTo.content) ? 'LMS' : 'SMS',
                     contentType: 'COMM',
                     countryCode: '82',
                     from: '01074345723',
-                    content,
+                    content: sendSmssDTo.content,
                     messages: [
                         {
-                            to,
+                            to: '01074345723',
                         },
                     ],
                 },

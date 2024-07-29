@@ -65,7 +65,12 @@ export class LessonsService {
       query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
     }
     const lessons = await query.getMany();
-    return lessons;
+
+    const lessonsWithId = lessons.map((lesson, index) => ({
+      ...lesson,
+      descid: index + 1,
+    }));
+    return lessonsWithId;
     // const lessons = this.lessonsRepository.find({
     //   relations: ['students'],
     //   order: { lessondate: 'DESC' },
@@ -77,6 +82,7 @@ export class LessonsService {
   async findOne(id: number) {
     const lesson = await this.lessonsRepository.findOne({
       where: { id },
+      relations: ['students'],
     });
     if (!lesson) {
       throw new BadRequestException(`존재하지 않는 수업입니다.`);
@@ -126,8 +132,12 @@ export class LessonsService {
     }
 
     const lessons = await query.getMany();
+    const lessonsWithId = lessons.map((lesson, index) => ({
+      ...lesson,
+      descid: index + 1,
+    }));
 
-    return lessons;
+    return lessonsWithId;
   }
 
   async update(id: number, updateLessonDto: UpdateLessonDto) {

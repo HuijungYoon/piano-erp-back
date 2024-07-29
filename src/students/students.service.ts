@@ -72,7 +72,7 @@ export class StudentsService {
       .createQueryBuilder('student')
       .leftJoinAndSelect('student.teacher', 'teacher')
       .leftJoinAndSelect('student.lessons', 'lessons')
-      .orderBy('student.id', 'DESC')
+      .orderBy('student.register', 'DESC')
       .where('student.closeday IS NULL');
 
     // const students = await this.studentRepository

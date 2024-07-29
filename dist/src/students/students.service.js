@@ -57,7 +57,7 @@ let StudentsService = class StudentsService {
             .createQueryBuilder('student')
             .leftJoinAndSelect('student.teacher', 'teacher')
             .leftJoinAndSelect('student.lessons', 'lessons')
-            .orderBy('student.id', 'DESC')
+            .orderBy('student.register', 'DESC')
             .where('student.closeday IS NULL');
         if ((teacher === null || teacher === void 0 ? void 0 : teacher.level) === 'teacher') {
             query.andWhere('teacher.id = :teacherId', { teacherId: teacher.id });

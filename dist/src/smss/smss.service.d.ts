@@ -3,6 +3,7 @@ import { UpdateSmssDto } from './dto/update-smss.dto';
 import { Students } from 'src/entities/Students';
 import { Repository } from 'typeorm';
 import { SMSs } from 'src/entities/SMSs';
+import { SendSmssDto } from './dto/send-smss.dto';
 export declare class SmssService {
     private studentsRepository;
     private smssRepository;
@@ -12,7 +13,7 @@ export declare class SmssService {
     private readonly secretKey;
     private readonly url;
     private makeSignature;
-    sendSMS(to: string[], content: string): Promise<any>;
+    sendSMS(sendSmssDTo: SendSmssDto): Promise<any>;
     create(createSmssDto: CreateSmssDto): string;
     findAll(): string;
     findOne(id: number): string;

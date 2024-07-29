@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Students } from 'src/entities/Students';
 import { In, Repository } from 'typeorm';
 import { SMSs } from 'src/entities/SMSs';
+import { SendSmssDto } from './dto/send-smss.dto';
+import { isOver118Bytes } from '../lib/smslib';
 @Injectable()
 export class SmssService {
   constructor(
@@ -43,15 +45,17 @@ export class SmssService {
     return signature;
   }
 
-  async sendSMS(to: string[], content: string): Promise<any> {
+  async sendSMS(sendSmssDTo: SendSmssDto): Promise<any> {
     const students = await this.studentsRepository.find({
       where: {
-        tel: In(to),
+        tel: In(sendSmssDTo.to),
       },
       relations: ['lessons'],
     });
 
-    console.log('students', students[0].lessons);
+    console.log(isOver118Bytes(sendSmssDTo.content));
+
+    console.log('students', students);
 
     const date = Date.now().toString();
     const signature = this.makeSignature();
@@ -67,14 +71,14 @@ export class SmssService {
           'x-ncp-apigw-signature-v2': signature,
         },
         data: {
-          type: 'SMS',
+          type: isOver118Bytes(sendSmssDTo.content) ? 'LMS' : 'SMS',
           contentType: 'COMM',
           countryCode: '82',
           from: '01074345723',
-          content,
+          content: sendSmssDTo.content,
           messages: [
             {
-              to,
+              to: '01074345723',
             },
           ],
         },

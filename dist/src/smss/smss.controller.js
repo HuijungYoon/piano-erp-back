@@ -17,12 +17,13 @@ const common_1 = require("@nestjs/common");
 const smss_service_1 = require("./smss.service");
 const create_smss_dto_1 = require("./dto/create-smss.dto");
 const update_smss_dto_1 = require("./dto/update-smss.dto");
+const send_smss_dto_1 = require("./dto/send-smss.dto");
 let SmssController = class SmssController {
     constructor(smssService) {
         this.smssService = smssService;
     }
-    async sendSMS(to, content) {
-        return await this.smssService.sendSMS(to, content);
+    async sendSMS(sendSmssDTo) {
+        return await this.smssService.sendSMS(sendSmssDTo);
     }
     create(createSmssDto) {
         return this.smssService.create(createSmssDto);
@@ -43,10 +44,9 @@ let SmssController = class SmssController {
 exports.SmssController = SmssController;
 __decorate([
     (0, common_1.Post)('send'),
-    __param(0, (0, common_1.Body)('to')),
-    __param(1, (0, common_1.Body)('content')),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array, String]),
+    __metadata("design:paramtypes", [send_smss_dto_1.SendSmssDto]),
     __metadata("design:returntype", Promise)
 ], SmssController.prototype, "sendSMS", null);
 __decorate([

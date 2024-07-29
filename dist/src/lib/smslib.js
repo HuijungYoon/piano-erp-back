@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.isOver118Bytes = void 0;
 const axios = require('axios');
 const CryptoJS = require('crypto-js');
 axios.defaults.withCredentials = true;
@@ -58,8 +59,34 @@ function naversmsAPI() {
         console.log(error.config);
     });
 }
+function getByteLength(s) {
+    let byteLength = 0;
+    for (let i = 0; i < s.length; i++) {
+        const code = s.charCodeAt(i);
+        if (code <= 0x7f) {
+            byteLength += 1;
+        }
+        else if (code <= 0x7ff) {
+            byteLength += 2;
+        }
+        else if (code >= 0x800 && code <= 0xffff) {
+            byteLength += 3;
+        }
+        else {
+            byteLength += 4;
+        }
+    }
+    return byteLength;
+}
+function isOver118Bytes(message) {
+    console.log('getByteLength(message) ', getByteLength(message));
+    return getByteLength(message) >= 118;
+}
+exports.isOver118Bytes = isOver118Bytes;
 module.exports = {
     naversmsAPI: naversmsAPI,
     makeSignature: makeSignature,
+    getByteLength: getByteLength,
+    isOver118Bytes: isOver118Bytes,
 };
 //# sourceMappingURL=smslib.js.map
