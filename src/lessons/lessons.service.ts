@@ -132,9 +132,9 @@ export class LessonsService {
     }
 
     const lessons = await query.getMany();
-    const lessonsWithId = lessons.map((lesson, index) => ({
+    const lessonsWithId = lessons.map((lesson, index, array) => ({
       ...lesson,
-      descid: index + 1,
+      descid: array.length - index,
     }));
 
     return lessonsWithId;
