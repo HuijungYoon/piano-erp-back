@@ -58,7 +58,7 @@ let LessonsService = class LessonsService {
             query.andWhere('teachers.id = :teacherId', { teacherId: teacher.id });
         }
         const lessons = await query.getMany();
-        const lessonsWithId = lessons.map((lesson, index) => (Object.assign(Object.assign({}, lesson), { descid: index + 1 })));
+        const lessonsWithId = lessons.map((lesson, index, array) => (Object.assign(Object.assign({}, lesson), { descid: array.length - index })));
         return lessonsWithId;
     }
     async findOne(id) {
