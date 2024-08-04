@@ -27,13 +27,25 @@ __decorate([
     __metadata("design:type", String)
 ], SMSs.prototype, "tel", void 0);
 __decorate([
-    (0, typeorm_1.Column)('varchar', { name: 'title', length: 100 }),
-    __metadata("design:type", String)
-], SMSs.prototype, "title", void 0);
-__decorate([
     (0, typeorm_1.Column)('text', { name: 'content' }),
     __metadata("design:type", String)
 ], SMSs.prototype, "content", void 0);
+__decorate([
+    (0, typeorm_1.Column)('enum', {
+        name: 'smstype',
+        enum: ['SMS', 'LMS'],
+        default: 'SMS',
+    }),
+    __metadata("design:type", String)
+], SMSs.prototype, "smstype", void 0);
+__decorate([
+    (0, typeorm_1.Column)('enum', {
+        name: 'status',
+        enum: ['success', 'fail'],
+        default: 'success',
+    }),
+    __metadata("design:type", String)
+], SMSs.prototype, "status", void 0);
 __decorate([
     (0, typeorm_1.Column)('timestamp', { name: 'sendtime' }),
     __metadata("design:type", Date)

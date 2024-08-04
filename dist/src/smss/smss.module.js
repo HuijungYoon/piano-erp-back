@@ -13,12 +13,13 @@ const smss_controller_1 = require("./smss.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const Students_1 = require("../entities/Students");
 const SMSs_1 = require("../entities/SMSs");
+const Lessons_1 = require("../entities/Lessons");
 let SmssModule = class SmssModule {
 };
 exports.SmssModule = SmssModule;
 exports.SmssModule = SmssModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_1.TypeOrmModule.forFeature([Students_1.Students, SMSs_1.SMSs])],
+        imports: [typeorm_1.TypeOrmModule.forFeature([Students_1.Students, SMSs_1.SMSs, Lessons_1.Lessons])],
         controllers: [smss_controller_1.SmssController],
         providers: [smss_service_1.SmssService],
     })

@@ -7,7 +7,7 @@ export declare class SmssController {
     constructor(smssService: SmssService);
     sendSMS(sendSmssDTo: SendSmssDto): Promise<any>;
     create(createSmssDto: CreateSmssDto): string;
-    findAll(): string;
+    findAll(): Promise<import("../entities/SMSs").SMSs[]>;
     findOne(id: string): string;
     update(id: string, updateSmssDto: UpdateSmssDto): string;
     remove(id: string): string;

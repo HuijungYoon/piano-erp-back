@@ -18,11 +18,21 @@ export class SMSs {
   @Column('varchar', { name: 'tel', length: 30 })
   tel: string;
 
-  @Column('varchar', { name: 'title', length: 100 })
-  title: string;
-
   @Column('text', { name: 'content' })
   content: string;
+
+  @Column('enum', {
+    name: 'smstype',
+    enum: ['SMS', 'LMS'],
+    default: 'SMS',
+  })
+  smstype: 'SMS' | 'LMS';
+  @Column('enum', {
+    name: 'status',
+    enum: ['success', 'fail'],
+    default: 'success',
+  })
+  status: 'success' | 'fail';
 
   @Column('timestamp', { name: 'sendtime' })
   sendtime: Date;
