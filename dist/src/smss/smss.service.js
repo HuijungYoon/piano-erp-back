@@ -58,6 +58,31 @@ let SmssService = class SmssService {
         this.secretKey = process.env.SMS_SECRETKEY;
         this.url = `https://sens.apigw.ntruss.com/sms/v2/services/${this.serviceId}/messages`;
     }
+    formatTimeWithPeriod(hourStr) {
+        const hour = parseInt(hourStr.replace('시', ''), 10);
+        let period = '';
+        let formattedHour = hour;
+        if (hour >= 9 && hour <= 12) {
+            period = '오전';
+        }
+        else if (hour >= 13 && hour <= 17) {
+            period = '오후';
+            formattedHour = hour - 12;
+        }
+        else if (hour >= 18 && hour <= 22) {
+            period = '저녁';
+            formattedHour = hour - 12;
+        }
+        return `${period} ${formattedHour}시`;
+    }
+    formatDateWithDay(dateStr) {
+        const [year, month, day] = dateStr.split('-');
+        const date = new Date(year, month - 1, day);
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        const dayOfWeek = days[date.getDay()];
+        const formattedDate = `${parseInt(month)}월 ${parseInt(day)}일 ${dayOfWeek}요일`;
+        return formattedDate;
+    }
     makeSignature(method) {
         const date = Date.now().toString();
         const space = ' ';
@@ -164,8 +189,14 @@ let SmssService = class SmssService {
         if (placeholders) {
             placeholders.forEach((placeholder) => {
                 const key = placeholder.replace(/\[\[|\]\]/g, '');
-                const value = newStudent[key];
-                console.log(value);
+                let value = newStudent[key];
+                if (key === 'lessondate' && value) {
+                    value = this.formatDateWithDay(String(value));
+                }
+                if (key === 'lessontime' && value) {
+                    console.log('value:', value);
+                    value = this.formatTimeWithPeriod(String(value));
+                }
                 content = content.replace(placeholder, value ? String(value) : '');
             });
         }
@@ -207,7 +238,7 @@ let SmssService = class SmssService {
             relations: ['lessons'],
         });
         let newstudents = [];
-        let testTel = process.env.SMS_PHONE;
+        const testTel = process.env.SMS_PHONE;
         if (sendSmssDTo.type === 'test') {
             this.sendMsg('test', '테스트발송', testTel, sendSmssDTo.content).then((res) => {
                 this.checkSmsStatus(res.requestId).then((res) => {

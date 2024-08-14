@@ -25,6 +25,8 @@ export declare class SmssService {
     private readonly accessKey;
     private readonly secretKey;
     private readonly url;
+    private formatTimeWithPeriod;
+    private formatDateWithDay;
     private makeSignature;
     private makeSignature2;
     checkSmsStatus(requestId: string): Promise<any>;

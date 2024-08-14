@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateSmssDto } from './dto/create-smss.dto';
 import { UpdateSmssDto } from './dto/update-smss.dto';
-import axios, { all } from 'axios';
+import axios from 'axios';
 import * as CryptoJS from 'crypto-js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Students } from 'src/entities/Students';
@@ -37,15 +37,48 @@ export class SmssService {
     private lessonsRepository: Repository<Lessons>,
   ) {}
 
-  //민지쌤꺼
   private readonly serviceId = process.env.SMS_SERVICE_ID;
   private readonly accessKey = process.env.SMS_ACCESS_KEY_ID; // access key id (from portal or Sub Account)
   private readonly secretKey = process.env.SMS_SECRETKEY; // secret key (from portal or Sub Account)
-
-  // private readonly serviceId = 'ncp:sms:kr:264435441348:atn';
-  // private readonly accessKey = 'jOlA1TzZeaxfiRSdHSKO'; // access key id (from portal or Sub Account)
-  // private readonly secretKey = 'NHBTQYWA0ZvjkfRb5Gbm09MR9Jvb0ZU216nJTByH'; // secret key (from portal or Sub Account)
   private readonly url = `https://sens.apigw.ntruss.com/sms/v2/services/${this.serviceId}/messages`;
+
+  private formatTimeWithPeriod(hourStr) {
+    // "시"를 제거하고 숫자로 변환
+    const hour = parseInt(hourStr.replace('시', ''), 10);
+    let period = '';
+    let formattedHour = hour;
+
+    if (hour >= 9 && hour <= 12) {
+      period = '오전';
+    } else if (hour >= 13 && hour <= 17) {
+      period = '오후';
+      formattedHour = hour - 12; // 13~17시를 1~5시로 변환
+    } else if (hour >= 18 && hour <= 22) {
+      period = '저녁';
+      formattedHour = hour - 12; // 18~22시를 6~10시로 변환
+    }
+
+    return `${period} ${formattedHour}시`;
+  }
+
+  private formatDateWithDay(dateStr) {
+    // 문자열을 연, 월, 일로 분리
+    const [year, month, day] = dateStr.split('-');
+
+    // Date 객체 생성 (월은 0부터 시작하므로 -1 해줌)
+    const date = new Date(year, month - 1, day);
+
+    // 요일 배열 생성 (일요일부터 토요일까지)
+    const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+    // 요일 구하기
+    const dayOfWeek = days[date.getDay()];
+
+    // 월과 일을 원하는 형식으로 변환
+    const formattedDate = `${parseInt(month)}월 ${parseInt(day)}일 ${dayOfWeek}요일`;
+
+    return formattedDate;
+  }
 
   private makeSignature(method: string): string {
     const date = Date.now().toString();
@@ -177,8 +210,15 @@ export class SmssService {
     if (placeholders) {
       placeholders.forEach((placeholder) => {
         const key = placeholder.replace(/\[\[|\]\]/g, '');
-        const value = newStudent[key as keyof newStudentProps];
-        console.log(value);
+        let value = newStudent[key as keyof newStudentProps];
+        if (key === 'lessondate' && value) {
+          value = this.formatDateWithDay(String(value));
+        }
+        if (key === 'lessontime' && value) {
+          console.log('value:', value);
+          value = this.formatTimeWithPeriod(String(value));
+        }
+
         content = content.replace(placeholder, value ? String(value) : '');
       });
     }
@@ -225,7 +265,7 @@ export class SmssService {
       relations: ['lessons'],
     });
     let newstudents: any = [];
-    let testTel = process.env.SMS_PHONE;
+    const testTel = process.env.SMS_PHONE;
     //테스트발송
     if (sendSmssDTo.type === 'test') {
       this.sendMsg('test', '테스트발송', testTel, sendSmssDTo.content).then(
